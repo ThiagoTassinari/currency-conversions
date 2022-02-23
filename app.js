@@ -50,13 +50,13 @@ const fetchExchangeRate = async () => {
 
 const init = async () => {
   const exchangeRateData = await fetchExchangeRate();
-
-  console.log(Object.keys(exchangeRateData.conversion_rates));
   
-  const option = `<option>oi</option>`
+  const getOptions = selectedCurrency => Object.keys(exchangeRateData.conversion_rates)
+  .map(currency => `<option ${currency === selectedCurrency ? 'selected' : ''}>${currency}</option>`)
+  .join("")
   
-  currencyOneEl.innerHTML = option;
-  currencyTwoEl.innerHTML = option;
+  currencyOneEl.innerHTML = getOptions('USD');
+  currencyTwoEl.innerHTML = getOptions('BRL');
 }
 
 init();
