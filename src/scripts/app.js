@@ -73,15 +73,15 @@ const fetchExchangeRate = async url => {
 }
 
 // Exibindo as informações iniciais na tela
-const showInitialInfo = exchangeRate => {
-  const getOptions = selectedCurrency => Object.keys(exchangeRate.conversion_rates)
+const showInitialInfo = ({ conversion_rates }) => {
+  const getOptions = selectedCurrency => Object.keys(conversion_rates)
   .map(currency => `<option ${currency === selectedCurrency ? 'selected' : ''}>${currency}</option>`)
   .join('')
   
   currencyOneEl.innerHTML = getOptions('USD');
   currencyTwoEl.innerHTML = getOptions('BRL');
-  convertedValueEl.textContent = exchangeRate.conversion_rates.BRL.toFixed(2);  // Valor relativo
-  valuePrecisionEl.textContent = `1 ${currencyOneEl.value} = ${exchangeRate.conversion_rates.BRL} BRL` // Valor absoluto
+  convertedValueEl.textContent = conversion_rates.BRL.toFixed(2);  // Valor relativo
+  valuePrecisionEl.textContent = `1 ${currencyOneEl.value} = ${conversion_rates.BRL} BRL` // Valor absoluto
 }
 
 const init = async () => {
@@ -94,14 +94,14 @@ const init = async () => {
   }
 }
 
-const showUpdateRates = exchangeRate => {
-  convertedValueEl.textContent = (timesCurrencyOneEl.value * exchangeRate.conversion_rates[currencyTwoEl.value]).toFixed(2);
-  valuePrecisionEl.textContent = ` 1 ${currencyOneEl.value} = ${1 * exchangeRate.conversion_rates[currencyTwoEl.value]} ${currencyTwoEl.value} `
+const showUpdateRates = ({ conversion_rates }) => {
+  convertedValueEl.textContent = (timesCurrencyOneEl.value * conversion_rates[currencyTwoEl.value]).toFixed(2);
+  valuePrecisionEl.textContent = ` 1 ${currencyOneEl.value} = ${1 * conversion_rates[currencyTwoEl.value]} ${currencyTwoEl.value} `
 }
 
 timesCurrencyOneEl.addEventListener('input', e => {
-  const exchangeRate = state.getExchangeRate();
-  convertedValueEl.textContent = (e.target.value * exchangeRate.conversion_rates[currencyTwoEl.value]).toFixed(2);
+  const {conversion_rates } = state.getExchangeRate();
+  convertedValueEl.textContent = (e.target.value * conversion_rates[currencyTwoEl.value]).toFixed(2);
 })
 
 currencyTwoEl.addEventListener('input', () => {
