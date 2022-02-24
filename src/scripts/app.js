@@ -100,14 +100,17 @@ const showUpdateRates = exchangeRate => {
 }
 
 timesCurrencyOneEl.addEventListener('input', e => {
-  convertedValueEl.textContent = (e.target.value * internalExchangeRate.conversion_rates[currencyTwoEl.value]).toFixed(2);
+  const exchangeRate = state.getExchangeRate();
+  convertedValueEl.textContent = (e.target.value * exchangeRate.conversion_rates[currencyTwoEl.value]).toFixed(2);
 })
 
-currencyTwoEl.addEventListener('input', showUpdateRates);
+currencyTwoEl.addEventListener('input', () => {
+  const exchangeRate = state.getExchangeRate()
+  showUpdateRates(exchangeRate);
+});
 
 currencyOneEl.addEventListener('input', async e => {
   const exchangeRate = state.setExchangeRate(await fetchExchangeRate(getUrl(e.target.value)));
-  console.log(exchangeRate)
   showUpdateRates(exchangeRate);
 })
 
