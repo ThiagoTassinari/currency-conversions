@@ -30,7 +30,8 @@ const state = (() => {
     getExchangeRate: () => exchangeRate,
     setExchangeRate: newExchangeRate => { 
       if (!newExchangeRate.conversion_rates) {
-        showAlert({ message: 'O objeto precisa ter uma propriedade conversion_rates '});
+        showAlert({
+          message: 'O objeto precisa ter uma propriedade conversion_rates '});
         return 
       }
 
