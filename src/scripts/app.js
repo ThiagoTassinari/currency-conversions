@@ -16,9 +16,8 @@ const showAlert = err => {
   button.setAttribute('type', 'button');
   button.setAttribute('aria-label', 'Close');
 
-  button.addEventListener('click', () => {
-    div.remove();
-  })
+  const removeAlert = () => div.remove();
+  button.addEventListener('click', removeAlert)
 
   div.appendChild(button);
   currenciesEl.insertAdjacentElement('afterend', div);
@@ -64,7 +63,7 @@ const fetchExchangeRate = async url => {
     const exchangeRateData = await response.json();
   
     if (exchangeRateData.result === 'error') {
-      const errorMessage = getErrorMessage(exchangeRateData['error-type'])
+      const errorMessage = getErrorMessage(exchangeRateData['error-type']);
       throw new Error(errorMessage);
     }
 
@@ -78,9 +77,11 @@ const fetchExchangeRate = async url => {
 const getOptions = (selectedCurrency, conversion_rates) => {
   const setSelectedAttribute = currency => 
     currency === selectedCurrency ? 'selected' : ''
+  const getOptionAsArray = currency =>
+    `<option ${setSelectedAttribute(currency)}>${currency}</option>`
 
     return Object.keys(conversion_rates)
-      .map(currency => `<option ${setSelectedAttribute(currency)}>${currency}</option>`)
+      .map(getOptionAsArray)
       .join('')
 }
 
@@ -108,29 +109,33 @@ const showInitialInfo = ({ conversion_rates }) => {
 }
 
 const init = async () => {
-  const url = getUrl('USD')
-  const exchangeRate = await fetchExchangeRate(url)
+  const url = getUrl('USD');
+  const exchangeRate = await fetchExchangeRate(url);
 
   if (exchangeRate && exchangeRate.conversion_rates) {
     showInitialInfo(exchangeRate);
   }
 }
 
-timesCurrencyOneEl.addEventListener('input', () => {
+const handleTimesCurrencyOneElInput = () => {
   const {conversion_rates } = state.getExchangeRate();
   convertedValueEl.textContent = getMultipliedExchangeRate(conversion_rates);
-})
+}
 
-currencyTwoEl.addEventListener('input', () => {
+const handleCurrencyTwoElInput = () => {
   const exchangeRate = state.getExchangeRate()
   showUpdateRates(exchangeRate);
-});
+}
 
-currencyOneEl.addEventListener('input', async e => {
+const handlecurrencyOneElInput = async e => {
   const url = getUrl(e.target.value);
   const exchangeRate = await fetchExchangeRate(url);
   
   showUpdateRates(exchangeRate);
-})
+}
+
+timesCurrencyOneEl.addEventListener('input', handleTimesCurrencyOneElInput);
+currencyTwoEl.addEventListener('input', handleCurrencyTwoElInput);
+currencyOneEl.addEventListener('input', handlecurrencyOneElInput);
 
 init();
